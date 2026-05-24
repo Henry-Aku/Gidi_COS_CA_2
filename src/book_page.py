@@ -213,3 +213,90 @@ class BookPage(ctk.CTkFrame):
             height=46, corner_radius=10,
             command=self._confirm_booking,
         ).grid(row=2, column=0, padx=20, pady=(8, 28), sticky="ew")
+
+    # ------------------------------------------------------------------ #
+    #  Logic helpers                                                       #
+    # ------------------------------------------------------------------ #
+    def _get_selected_guide(self):
+        idx = self._selected_guide_index.get()
+        state = self._guide_state_var.get()
+        guides = TOUR_GUIDES if state == "All States" else [
+            g for g in TOUR_GUIDES if g["state"] == state
+        ]
+        if 0 <= idx < len(guides):
+            return guides[idx]
+        return None
+
+    def _update_summary(self, *_):
+        dest = self.dest_var.get().strip()
+        date = self.date_var.get().strip()
+        guide = self._get_selected_guide()
+        guide_name = guide["name"] if guide else "—"
+        dest_str = dest if dest else "—"
+        date_str = date if date else "—"
+        n = self._travellers_var.get()
+        self.summary_label.configure(
+            text=f"Booking: {dest_str}  |  Date: {date_str}  |  "
+                 f"Travellers: {n}  |  Guide: {guide_name}"
+        )
+
+    def _confirm_booking(self):
+        dest = self.dest_var.get().strip()
+        date = self.date_var.get().strip()
+        guide = self._get_selected_guide()
+
+        if not dest:
+            self.error_label.configure(text="⚠  Please enter a destination.")
+            return
+        if not date:
+            self.error_label.configure(text="⚠  Please enter a travel date.")
+            return
+        if guide is None:
+            self.error_label.configure(text="⚠  Please select a tour guide.")
+            return
+
+        self.error_label.configure(text="")
+
+        trip = {
+            "destination": dest,
+            "date": date,
+            "travellers": self._travellers_var.get(),
+            "guide": guide,
+        }
+        self.controller.booked_trips.append(trip)
+
+        self._reset_form()
+        self.controller.show_page("MyTripPage")
+
+    def _reset_form(self):
+        self.dest_var.set("")
+        self.date_var.set("")
+        self._travellers_var.set(1)
+        self.travellers_label.configure(text="1")
+        self._selected_guide_index.set(-1)
+        self._guide_state_var.set("All States")
+        self._refresh_guides()
+        self._update_summary()
+
+    # ------------------------------------------------------------------ #
+    #  Public API                                                          #
+    # ------------------------------------------------------------------ #
+    def set_destination(self, name: str):
+        self.dest_var.set(name)
+
+    # ------------------------------------------------------------------ #
+    #  Shared section builder                                              #
+    # ------------------------------------------------------------------ #
+    def _make_section(self, parent, title, section_row):
+        outer = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=14)
+        outer.grid(row=section_row, column=0, sticky="ew", padx=30, pady=12)
+        outer.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(outer, text=title,
+                     font=ctk.CTkFont(size=16, weight="bold"), text_color=ACCENT
+                     ).grid(row=0, column=0, sticky="w", padx=20, pady=(16, 0))
+
+        divider = ctk.CTkFrame(outer, height=2, fg_color=ACCENT)
+        divider.grid(row=1, column=0, sticky="ew", padx=20, pady=(6, 0))
+
+        return outer
