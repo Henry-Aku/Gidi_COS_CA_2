@@ -1,11 +1,13 @@
 import customtkinter as ctk
 
-BG      = "#0f3460"
-CARD    = "#16213e"
-ACCENT  = "#e94560"
-TEXT    = "#eaeaea"
-SUBTEXT = "#a8b2d8"
-GREEN   = "#4caf50"
+BG      = "#FAFAFA"
+CARD    = "#FFFFFF"
+SIDEBAR = "#F0F0F0"
+ACCENT  = "#76EE52"
+HOVER   = "#5ed43a"
+TEXT    = "#111111"
+SUBTEXT = "#666666"
+BORDER  = "#E0E0E0"
 
 
 class MyTripPage(ctk.CTkFrame):
@@ -18,14 +20,14 @@ class MyTripPage(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        # --- Top bar ---
-        topbar = ctk.CTkFrame(self, fg_color=CARD, corner_radius=0)
+        topbar = ctk.CTkFrame(self, fg_color=CARD, corner_radius=0,
+                              border_width=1, border_color=BORDER)
         topbar.grid(row=0, column=0, sticky="ew")
         topbar.grid_columnconfigure(1, weight=1)
 
         ctk.CTkButton(
             topbar, text="← Home", width=90, fg_color="transparent",
-            text_color=SUBTEXT, hover_color=BG,
+            text_color=SUBTEXT, hover_color=SIDEBAR,
             command=lambda: self.controller.show_page("HomePage"),
         ).grid(row=0, column=0, padx=10, pady=10)
 
@@ -34,7 +36,6 @@ class MyTripPage(ctk.CTkFrame):
             font=ctk.CTkFont(size=20, weight="bold"), text_color=TEXT,
         ).grid(row=0, column=1, pady=14)
 
-        # --- Scrollable content area (rebuilt on refresh) ---
         self.content_frame = ctk.CTkScrollableFrame(self, fg_color=BG)
         self.content_frame.grid(row=1, column=0, sticky="nsew")
         self.content_frame.grid_columnconfigure(0, weight=1)
@@ -55,7 +56,7 @@ class MyTripPage(ctk.CTkFrame):
             ctk.CTkButton(
                 self.content_frame,
                 text="🗺️  Explore Nigeria",
-                fg_color=ACCENT, hover_color="#c73652",
+                fg_color=ACCENT, hover_color=HOVER,
                 text_color=TEXT, font=ctk.CTkFont(size=14, weight="bold"),
                 height=42, corner_radius=10,
                 command=lambda: self.controller.show_page("ExplorePage"),
@@ -68,14 +69,15 @@ class MyTripPage(ctk.CTkFrame):
         ctk.CTkButton(
             self.content_frame,
             text="📅  Book Another Trip",
-            fg_color=ACCENT, hover_color="#c73652",
+            fg_color=ACCENT, hover_color=HOVER,
             text_color=TEXT, font=ctk.CTkFont(size=14, weight="bold"),
             height=42, corner_radius=10,
             command=lambda: self.controller.show_page("BookPage"),
         ).grid(row=len(trips), column=0, padx=30, pady=(12, 28), sticky="ew")
 
     def _make_trip_card(self, parent, trip, index):
-        card = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=14)
+        card = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=14,
+                             border_width=1, border_color=BORDER)
         card.grid(row=index, column=0, sticky="ew", padx=30, pady=10)
         card.grid_columnconfigure(0, weight=1)
 
@@ -90,8 +92,8 @@ class MyTripPage(ctk.CTkFrame):
 
         ctk.CTkLabel(
             header, text="Confirmed ✓",
-            font=ctk.CTkFont(size=12, weight="bold"), text_color=BG,
-            fg_color=GREEN, corner_radius=8,
+            font=ctk.CTkFont(size=12, weight="bold"), text_color="#1a6e00",
+            fg_color=ACCENT, corner_radius=8,
         ).grid(row=0, column=1, sticky="e")
 
         guide = trip["guide"]

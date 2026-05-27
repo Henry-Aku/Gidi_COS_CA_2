@@ -1,12 +1,15 @@
 import customtkinter as ctk
 from data import NIGERIA_DATA, TOUR_GUIDES
 
-BG      = "#0f3460"
-CARD    = "#16213e"
-ACCENT  = "#e94560"
-TEXT    = "#eaeaea"
-SUBTEXT = "#a8b2d8"
-GREEN   = "#4caf50"
+BG      = "#FAFAFA"
+CARD    = "#FFFFFF"
+SIDEBAR = "#F0F0F0"
+ACCENT  = "#76EE52"
+HOVER   = "#5ed43a"
+TEXT    = "#111111"
+SUBTEXT = "#666666"
+BORDER  = "#E0E0E0"
+GREEN   = "#76EE52"
 
 
 class BookPage(ctk.CTkFrame):
@@ -22,14 +25,14 @@ class BookPage(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        # --- Top bar ---
-        topbar = ctk.CTkFrame(self, fg_color=CARD, corner_radius=0)
+        topbar = ctk.CTkFrame(self, fg_color=CARD, corner_radius=0,
+                              border_width=1, border_color=BORDER)
         topbar.grid(row=0, column=0, sticky="ew")
         topbar.grid_columnconfigure(1, weight=1)
 
         ctk.CTkButton(
             topbar, text="← Home", width=90, fg_color="transparent",
-            text_color=SUBTEXT, hover_color=BG,
+            text_color=SUBTEXT, hover_color=SIDEBAR,
             command=lambda: self.controller.show_page("HomePage"),
         ).grid(row=0, column=0, padx=10, pady=10)
 
@@ -38,7 +41,6 @@ class BookPage(ctk.CTkFrame):
             font=ctk.CTkFont(size=20, weight="bold"), text_color=TEXT,
         ).grid(row=0, column=1, pady=14)
 
-        # --- Scrollable body ---
         self.body = ctk.CTkScrollableFrame(self, fg_color=BG)
         self.body.grid(row=1, column=0, sticky="nsew")
         self.body.grid_columnconfigure(0, weight=1)
@@ -47,9 +49,6 @@ class BookPage(ctk.CTkFrame):
         self._build_guide_section()
         self._build_confirm_section()
 
-    # ------------------------------------------------------------------ #
-    #  Section 1 — Trip Details                                            #
-    # ------------------------------------------------------------------ #
     def _build_trip_details(self):
         section = self._make_section(self.body, "1.  Trip Details", 0)
 
@@ -60,7 +59,7 @@ class BookPage(ctk.CTkFrame):
         self.dest_entry = ctk.CTkEntry(
             section, textvariable=self.dest_var,
             placeholder_text="e.g. Nike Art Gallery",
-            fg_color=BG, border_color=ACCENT, text_color=TEXT, height=38,
+            fg_color=SIDEBAR, border_color=BORDER, text_color=TEXT, height=38,
         )
         self.dest_entry.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 12))
         self.dest_var.trace_add("write", self._update_summary)
@@ -72,7 +71,7 @@ class BookPage(ctk.CTkFrame):
         ctk.CTkEntry(
             section, textvariable=self.date_var,
             placeholder_text="DD/MM/YYYY",
-            fg_color=BG, border_color=ACCENT, text_color=TEXT, height=38,
+            fg_color=SIDEBAR, border_color=BORDER, text_color=TEXT, height=38,
         ).grid(row=3, column=0, sticky="ew", padx=20, pady=(0, 12))
         self.date_var.trace_add("write", self._update_summary)
 
@@ -85,14 +84,14 @@ class BookPage(ctk.CTkFrame):
 
         self.travellers_label = ctk.CTkLabel(traveller_row, text="1",
                                              font=ctk.CTkFont(size=16, weight="bold"),
-                                             text_color=ACCENT, width=30)
+                                             text_color=TEXT, width=30)
         self.travellers_label.grid(row=0, column=1, padx=(12, 0))
 
         ctk.CTkSlider(
             traveller_row, from_=1, to=20, number_of_steps=19,
             variable=self._travellers_var,
-            button_color=ACCENT, button_hover_color="#c73652",
-            progress_color=ACCENT, fg_color=CARD,
+            button_color=ACCENT, button_hover_color=HOVER,
+            progress_color=ACCENT, fg_color=SIDEBAR,
             command=self._on_travellers_change,
         ).grid(row=0, column=0, sticky="ew")
 
@@ -102,9 +101,6 @@ class BookPage(ctk.CTkFrame):
         self.travellers_label.configure(text=str(n))
         self._update_summary()
 
-    # ------------------------------------------------------------------ #
-    #  Section 2 — Tour Guides                                            #
-    # ------------------------------------------------------------------ #
     def _build_guide_section(self):
         section = self._make_section(self.body, "2.  Choose a Tour Guide", 1)
 
@@ -119,7 +115,7 @@ class BookPage(ctk.CTkFrame):
         ctk.CTkComboBox(
             filter_row, values=state_options,
             variable=self._guide_state_var, state="readonly",
-            fg_color=BG, button_color=ACCENT, border_color=ACCENT,
+            fg_color=SIDEBAR, button_color=ACCENT, border_color=BORDER,
             text_color=TEXT, dropdown_fg_color=CARD,
             command=self._refresh_guides,
         ).grid(row=0, column=1, sticky="ew")
@@ -148,7 +144,8 @@ class BookPage(ctk.CTkFrame):
             self._make_guide_card(self.guides_container, guide, i)
 
     def _make_guide_card(self, parent, guide, index):
-        card = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=12)
+        card = ctk.CTkFrame(parent, fg_color=SIDEBAR, corner_radius=12,
+                             border_width=1, border_color=BORDER)
         card.pack(fill="x", pady=6)
         card.grid_columnconfigure(0, weight=1)
 
@@ -163,7 +160,7 @@ class BookPage(ctk.CTkFrame):
 
         ctk.CTkLabel(top, text=guide["fee"],
                      font=ctk.CTkFont(size=13, weight="bold"),
-                     text_color=ACCENT).grid(row=0, column=1, sticky="e")
+                     text_color="#1a6e00").grid(row=0, column=1, sticky="e")
 
         ctk.CTkLabel(card, text=guide["specialty"],
                      font=ctk.CTkFont(size=12), text_color=SUBTEXT
@@ -182,14 +179,11 @@ class BookPage(ctk.CTkFrame):
         ctk.CTkRadioButton(
             card, text=f"Select {guide['name']}",
             variable=self._selected_guide_index, value=index,
-            fg_color=ACCENT, hover_color="#c73652", text_color=TEXT,
+            fg_color=ACCENT, hover_color=HOVER, text_color=TEXT,
             font=ctk.CTkFont(size=13),
             command=self._update_summary,
         ).grid(row=4, column=0, sticky="w", padx=16, pady=(8, 14))
 
-    # ------------------------------------------------------------------ #
-    #  Section 3 — Confirm                                                 #
-    # ------------------------------------------------------------------ #
     def _build_confirm_section(self):
         section = self._make_section(self.body, "3.  Confirm Booking", 2)
 
@@ -201,22 +195,19 @@ class BookPage(ctk.CTkFrame):
         )
         self.summary_label.grid(row=0, column=0, sticky="w", padx=20, pady=(16, 8))
 
-        self.error_label = ctk.CTkLabel(section, text="", text_color="#ff6b6b",
+        self.error_label = ctk.CTkLabel(section, text="", text_color="#c0392b",
                                         font=ctk.CTkFont(size=12))
         self.error_label.grid(row=1, column=0, sticky="w", padx=20)
 
         ctk.CTkButton(
             section,
             text="✅  Confirm Booking",
-            fg_color=GREEN, hover_color="#388e3c",
+            fg_color=ACCENT, hover_color=HOVER,
             text_color=TEXT, font=ctk.CTkFont(size=15, weight="bold"),
             height=46, corner_radius=10,
             command=self._confirm_booking,
         ).grid(row=2, column=0, padx=20, pady=(8, 28), sticky="ew")
 
-    # ------------------------------------------------------------------ #
-    #  Logic helpers                                                       #
-    # ------------------------------------------------------------------ #
     def _get_selected_guide(self):
         idx = self._selected_guide_index.get()
         state = self._guide_state_var.get()
@@ -278,25 +269,20 @@ class BookPage(ctk.CTkFrame):
         self._refresh_guides()
         self._update_summary()
 
-    # ------------------------------------------------------------------ #
-    #  Public API                                                          #
-    # ------------------------------------------------------------------ #
     def set_destination(self, name: str):
         self.dest_var.set(name)
 
-    # ------------------------------------------------------------------ #
-    #  Shared section builder                                              #
-    # ------------------------------------------------------------------ #
     def _make_section(self, parent, title, section_row):
-        outer = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=14)
+        outer = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=14,
+                              border_width=1, border_color=BORDER)
         outer.grid(row=section_row, column=0, sticky="ew", padx=30, pady=12)
         outer.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(outer, text=title,
-                     font=ctk.CTkFont(size=16, weight="bold"), text_color=ACCENT
+                     font=ctk.CTkFont(size=16, weight="bold"), text_color=TEXT
                      ).grid(row=0, column=0, sticky="w", padx=20, pady=(16, 0))
 
-        divider = ctk.CTkFrame(outer, height=2, fg_color=ACCENT)
+        divider = ctk.CTkFrame(outer, height=1, fg_color=BORDER)
         divider.grid(row=1, column=0, sticky="ew", padx=20, pady=(6, 0))
 
         return outer

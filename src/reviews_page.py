@@ -1,12 +1,15 @@
 import customtkinter as ctk
 from data import SEED_REVIEWS
 
-BG      = "#0f3460"
-CARD    = "#16213e"
-ACCENT  = "#e94560"
-TEXT    = "#eaeaea"
-SUBTEXT = "#a8b2d8"
-GOLD    = "#ffd700"
+BG      = "#FAFAFA"
+CARD    = "#FFFFFF"
+SIDEBAR = "#F0F0F0"
+ACCENT  = "#76EE52"
+HOVER   = "#5ed43a"
+TEXT    = "#111111"
+SUBTEXT = "#666666"
+BORDER  = "#E0E0E0"
+GOLD    = "#f5a623"
 
 
 class ReviewsPage(ctk.CTkFrame):
@@ -20,14 +23,14 @@ class ReviewsPage(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        # --- Top bar ---
-        topbar = ctk.CTkFrame(self, fg_color=CARD, corner_radius=0)
+        topbar = ctk.CTkFrame(self, fg_color=CARD, corner_radius=0,
+                              border_width=1, border_color=BORDER)
         topbar.grid(row=0, column=0, sticky="ew")
         topbar.grid_columnconfigure(1, weight=1)
 
         ctk.CTkButton(
             topbar, text="← Home", width=90, fg_color="transparent",
-            text_color=SUBTEXT, hover_color=BG,
+            text_color=SUBTEXT, hover_color=SIDEBAR,
             command=lambda: self.controller.show_page("HomePage"),
         ).grid(row=0, column=0, padx=10, pady=10)
 
@@ -36,7 +39,6 @@ class ReviewsPage(ctk.CTkFrame):
             font=ctk.CTkFont(size=20, weight="bold"), text_color=TEXT,
         ).grid(row=0, column=1, pady=14)
 
-        # --- Main layout: left (reviews list) + right (submission form) ---
         body = ctk.CTkFrame(self, fg_color=BG)
         body.grid(row=1, column=0, sticky="nsew")
         body.grid_rowconfigure(0, weight=1)
@@ -46,17 +48,14 @@ class ReviewsPage(ctk.CTkFrame):
         self._build_reviews_panel(body)
         self._build_submission_panel(body)
 
-    # ------------------------------------------------------------------ #
-    #  Left — Reviews list                                                 #
-    # ------------------------------------------------------------------ #
     def _build_reviews_panel(self, parent):
         left = ctk.CTkFrame(parent, fg_color=BG)
         left.grid(row=0, column=0, sticky="nsew", padx=(0, 0))
         left.grid_rowconfigure(1, weight=1)
         left.grid_columnconfigure(0, weight=1)
 
-        # Filters row
-        filters = ctk.CTkFrame(left, fg_color=CARD, corner_radius=10)
+        filters = ctk.CTkFrame(left, fg_color=CARD, corner_radius=10,
+                                border_width=1, border_color=BORDER)
         filters.grid(row=0, column=0, sticky="ew", padx=20, pady=(16, 8))
         filters.grid_columnconfigure(0, weight=1)
 
@@ -64,7 +63,7 @@ class ReviewsPage(ctk.CTkFrame):
         search_entry = ctk.CTkEntry(
             filters, textvariable=self.search_var,
             placeholder_text="Search reviews...",
-            fg_color=BG, border_color=ACCENT, text_color=TEXT, height=36,
+            fg_color=SIDEBAR, border_color=BORDER, text_color=TEXT, height=36,
         )
         search_entry.grid(row=0, column=0, padx=12, pady=10, sticky="ew")
         search_entry.bind("<KeyRelease>", lambda _: self._render_reviews())
@@ -74,13 +73,12 @@ class ReviewsPage(ctk.CTkFrame):
         ctk.CTkComboBox(
             filters, values=rating_options,
             variable=self.rating_filter_var, state="readonly",
-            fg_color=BG, button_color=ACCENT, border_color=ACCENT,
+            fg_color=SIDEBAR, button_color=ACCENT, border_color=BORDER,
             text_color=TEXT, dropdown_fg_color=CARD,
             command=lambda _: self._render_reviews(),
             width=160,
         ).grid(row=0, column=1, padx=(0, 12), pady=10)
 
-        # Scrollable review cards
         self.reviews_scroll = ctk.CTkScrollableFrame(left, fg_color=BG)
         self.reviews_scroll.grid(row=1, column=0, sticky="nsew", padx=20, pady=(0, 16))
         self.reviews_scroll.grid_columnconfigure(0, weight=1)
@@ -115,7 +113,8 @@ class ReviewsPage(ctk.CTkFrame):
             self._make_review_card(self.reviews_scroll, review)
 
     def _make_review_card(self, parent, review):
-        card = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=12)
+        card = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=12,
+                             border_width=1, border_color=BORDER)
         card.pack(fill="x", pady=6)
         card.grid_columnconfigure(0, weight=1)
 
@@ -136,20 +135,18 @@ class ReviewsPage(ctk.CTkFrame):
                      font=ctk.CTkFont(size=12, weight="bold"), text_color=SUBTEXT,
                      ).grid(row=3, column=0, sticky="w", padx=16, pady=(0, 12))
 
-    # ------------------------------------------------------------------ #
-    #  Right — Submission form                                             #
-    # ------------------------------------------------------------------ #
     def _build_submission_panel(self, parent):
-        right = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=0, width=320)
+        right = ctk.CTkFrame(parent, fg_color=CARD, corner_radius=0, width=320,
+                              border_width=1, border_color=BORDER)
         right.grid(row=0, column=1, sticky="nsew")
         right.grid_propagate(False)
         right.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(right, text="Share Your Experience",
-                     font=ctk.CTkFont(size=16, weight="bold"), text_color=ACCENT,
+                     font=ctk.CTkFont(size=16, weight="bold"), text_color=TEXT,
                      ).grid(row=0, column=0, sticky="w", padx=20, pady=(24, 2))
 
-        divider = ctk.CTkFrame(right, height=2, fg_color=ACCENT)
+        divider = ctk.CTkFrame(right, height=1, fg_color=BORDER)
         divider.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 16))
 
         ctk.CTkLabel(right, text="Your name", text_color=SUBTEXT,
@@ -158,7 +155,7 @@ class ReviewsPage(ctk.CTkFrame):
         self.name_var = ctk.StringVar()
         ctk.CTkEntry(right, textvariable=self.name_var,
                      placeholder_text="Your name",
-                     fg_color=BG, border_color=ACCENT, text_color=TEXT, height=36,
+                     fg_color=SIDEBAR, border_color=BORDER, text_color=TEXT, height=36,
                      ).grid(row=3, column=0, sticky="ew", padx=20, pady=(0, 10))
 
         ctk.CTkLabel(right, text="Location visited", text_color=SUBTEXT,
@@ -167,15 +164,15 @@ class ReviewsPage(ctk.CTkFrame):
         self.location_var = ctk.StringVar()
         ctk.CTkEntry(right, textvariable=self.location_var,
                      placeholder_text="e.g. Osun Sacred Grove",
-                     fg_color=BG, border_color=ACCENT, text_color=TEXT, height=36,
+                     fg_color=SIDEBAR, border_color=BORDER, text_color=TEXT, height=36,
                      ).grid(row=5, column=0, sticky="ew", padx=20, pady=(0, 10))
 
         ctk.CTkLabel(right, text="Your review", text_color=SUBTEXT,
                      font=ctk.CTkFont(size=13)).grid(row=6, column=0, sticky="w", padx=20, pady=(0, 2))
 
         self.review_text_box = ctk.CTkTextbox(
-            right, height=80, fg_color=BG, border_color=ACCENT,
-            border_width=2, text_color=TEXT, font=ctk.CTkFont(size=13),
+            right, height=80, fg_color=SIDEBAR, border_color=BORDER,
+            border_width=1, text_color=TEXT, font=ctk.CTkFont(size=13),
         )
         self.review_text_box.grid(row=7, column=0, sticky="ew", padx=20, pady=(0, 10))
 
@@ -189,17 +186,17 @@ class ReviewsPage(ctk.CTkFrame):
             ctk.CTkRadioButton(
                 stars_row, text=str(val),
                 variable=self._new_rating_var, value=val,
-                fg_color=GOLD, hover_color="#e6c200", text_color=TEXT,
+                fg_color=ACCENT, hover_color=HOVER, text_color=TEXT,
                 font=ctk.CTkFont(size=13),
             ).pack(side="left", padx=4)
 
-        self.submit_error_label = ctk.CTkLabel(right, text="", text_color="#ff6b6b",
+        self.submit_error_label = ctk.CTkLabel(right, text="", text_color="#c0392b",
                                                font=ctk.CTkFont(size=12))
         self.submit_error_label.grid(row=10, column=0, sticky="w", padx=20)
 
         ctk.CTkButton(
             right, text="Submit Review",
-            fg_color=ACCENT, hover_color="#c73652",
+            fg_color=ACCENT, hover_color=HOVER,
             text_color=TEXT, font=ctk.CTkFont(size=14, weight="bold"),
             height=42, corner_radius=10,
             command=self._submit_review,
@@ -236,8 +233,5 @@ class ReviewsPage(ctk.CTkFrame):
 
         self._render_reviews()
 
-    # ------------------------------------------------------------------ #
-    #  refresh — called by controller on navigation                        #
-    # ------------------------------------------------------------------ #
     def refresh(self):
         self._render_reviews()
