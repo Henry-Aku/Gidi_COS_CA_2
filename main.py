@@ -5,7 +5,7 @@ from src.book_page import BookPage
 from src.my_trip_page import MyTripPage
 from src.reviews_page import ReviewsPage
 
-ctk.set_appearance_mode("dark")
+ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
 
@@ -18,7 +18,7 @@ class GidiApp(ctk.CTk):
 
         self.booked_trips = []
 
-        container = ctk.CTkFrame(self, fg_color="#0f3460")
+        container = ctk.CTkFrame(self, fg_color="#FAFAFA")
         container.pack(fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
